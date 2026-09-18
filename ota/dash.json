@@ -1,0 +1,15 @@
+[
+  {
+    "datetime": 1789153706,
+    "files": [
+      {
+        "filename": "lineage-23.2-20260911-RAWHIDE-dash-signed.zip",
+        "sha256": "618b000a96d7d23a04398e74e3a51c6acd75aa1ab36ca188e66054571f77701d",
+        "size": 1562582853,
+        "url": "https://builds.sandai.me/lineage-23.2-20260911-RAWHIDE-dash-signed.zip"
+      }
+    ],
+    "type": "RAWHIDE",
+    "version": "23.2"
+  }
+]

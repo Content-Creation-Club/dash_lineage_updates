@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LineageOS Updates for dash — Redmi Turbo 5 Max</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #eeeeee;
+    --surface-high: #e4e4e4;
+    --primary: #1b1b1b;
+    --on-primary: #ffffff;
+    --text: #1b1b1b;
+    --text-sub: #474747;
+    --outline: #c7c7c7;
+    --chip-bg: #e0e0e0;
+    --code-bg: #e4e4e4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131313;
+      --surface: #1f1f1f;
+      --surface-high: #2a2a2a;
+      --primary: #e3e3e3;
+      --on-primary: #1b1b1b;
+      --text: #e3e3e3;
+      --text-sub: #c6c6c6;
+      --outline: #474747;
+      --chip-bg: #303030;
+      --code-bg: #2a2a2a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Google Sans", Roboto, "Noto Sans", system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { padding: 24px 0 8px; }
+  header h1 { font-size: 1.75rem; font-weight: 500; margin: 0; }
+  header p { color: var(--text-sub); margin: 6px 0 0; }
+
+  .card {
+    background: var(--surface);
+    border-radius: 28px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .card-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .card-title h2 { font-size: 1.25rem; font-weight: 500; margin: 0; }
+  .chip {
+    background: var(--chip-bg);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  dl.meta { margin: 16px 0 0; }
+  dl.meta div { display: flex; flex-direction: column; padding: 8px 0; border-top: 1px solid var(--outline); }
+  dl.meta div:first-child { border-top: none; }
+  dt { color: var(--text-sub); font-size: 0.8rem; }
+  dd { margin: 2px 0 0; font-size: 0.95rem; word-break: break-all; }
+  dd.mono {
+    font-family: ui-monospace, "Roboto Mono", monospace;
+    font-size: 0.82rem;
+    background: var(--code-bg);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 6px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .state {
+    background: var(--surface);
+    border-radius: 28px;
+    padding: 40px 24px;
+    margin-top: 24px;
+    text-align: center;
+    color: var(--text-sub);
+  }
+  .prev .card-title h2 { font-size: 1.05rem; }
+  footer { margin-top: 40px; color: var(--text-sub); font-size: 0.8rem; text-align: center; }
+  footer a { color: var(--primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>dash updates when?</h1>
+    <p><del>idk either.</del></p>
+  </header>
+
+  <main id="content">
+    <div class="state">Loading builds&hellip;</div>
+  </main>
+
+  <footer>&copy; 2026 <a href="https://github.com/YorokobiMaster">YorokobiMaster</a></footer>
+</div>
+
+<script>
+(function () {
+  var content = document.getElementById("content");
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function formatDate(epochSec) {
+    return new Date(epochSec * 1000).toLocaleDateString("en-US", {
+      year: "numeric", month: "long", day: "numeric"
+    });
+  }
+
+  function formatSize(bytes) {
+    var gib = bytes / (1024 * 1024 * 1024);
+    if (gib >= 1) return gib.toFixed(2) + " GiB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MiB";
+  }
+
+  function metaRow(dl, label, value, mono) {
+    var row = el("div");
+    row.appendChild(el("dt", null, label));
+    row.appendChild(el("dd", mono ? "mono" : null, value));
+    dl.appendChild(row);
+  }
+
+  function buildCard(build, isLatest) {
+    var file = (build.files && build.files[0]) || {};
+    var card = el("section", "card" + (isLatest ? "" : " prev"));
+
+    var title = el("div", "card-title");
+    title.appendChild(el("h2", null, isLatest ? "LineageOS " + build.version : "Previous build"));
+    if (build.type) title.appendChild(el("span", "chip", build.type));
+    card.appendChild(title);
+
+    var dl = el("dl", "meta");
+    if (build.type && !isLatest) metaRow(dl, "Release type", build.type);
+    if (build.datetime) metaRow(dl, "Build date", formatDate(build.datetime));
+    if (file.filename) metaRow(dl, "Filename", file.filename);
+    if (typeof file.size === "number") metaRow(dl, "File size", formatSize(file.size));
+    if (file.sha256) metaRow(dl, "SHA256", file.sha256, true);
+    card.appendChild(dl);
+
+    if (file.url) {
+      var btn = el("a", "btn", "Download");
+      btn.href = file.url;
+      btn.rel = "noopener";
+      card.appendChild(btn);
+    }
+    return card;
+  }
+
+  function showState(msg) {
+    content.textContent = "";
+    content.appendChild(el("div", "state", msg));
+  }
+
+  fetch("ota/dash.json", { cache: "no-store" })
+    .then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function (data) {
+      if (!Array.isArray(data)) throw new Error("unexpected format");
+      var builds = data
+        .filter(function (b) { return b && typeof b.datetime === "number"; })
+        .sort(function (a, b) { return b.datetime - a.datetime; });
+
+      if (builds.length === 0) {
+        showState("No builds are currently available.");
+        return;
+      }
+      content.textContent = "";
+      content.appendChild(buildCard(builds[0], true));
+      if (builds.length > 1) content.appendChild(buildCard(builds[1], false));
+    })
+    .catch(function () {
+      showState("Build metadata is currently unavailable. Please check back later.");
+    });
+})();
+</script>
+</body>
+</html>
